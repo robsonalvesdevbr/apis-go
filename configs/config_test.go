@@ -9,6 +9,9 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+const testJwtSecret = "my-secret-key"
+const testConfigPath = "/tmp/test"
+
 type MockConfig struct {
 	mock.Mock
 }
@@ -24,7 +27,7 @@ func (m *MockConfig) LoadConfig(path string) (*conf, error) {
 func TestLoadConfigSuccess(t *testing.T) {
 	mockConfig := new(MockConfig)
 
-	mockConfig.On("LoadConfig", "/tmp/test").Return(&conf{
+	mockConfig.On("LoadConfig", testConfigPath).Return(&conf{
 		DBDriver:      "mysql",
 		DBHost:        "localhost",
 		DBPort:        "3306",
@@ -32,12 +35,12 @@ func TestLoadConfigSuccess(t *testing.T) {
 		DBPassword:    "root",
 		DBName:        "testdb",
 		WebServerPort: "8080",
-		JwtSecret:     "my-secret-key",
+		JwtSecret:     testJwtSecret,
 		JwtExpiresIn:  3600,
 		LogLevel:      "info",
-		AuthToken:     jwtauth.New("HS256", []byte("my-secret-key"), nil),
+		AuthToken:     jwtauth.New("HS256", []byte(testJwtSecret), nil),
 	}, nil)
-	config, err := mockConfig.LoadConfig("/tmp/test")
+	config, err := mockConfig.LoadConfig(testConfigPath)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, config)
@@ -48,7 +51,7 @@ func TestLoadConfigSuccess(t *testing.T) {
 	assert.Equal(t, "root", config.DBPassword)
 	assert.Equal(t, "testdb", config.DBName)
 	assert.Equal(t, "8080", config.WebServerPort)
-	assert.Equal(t, "my-secret-key", config.JwtSecret)
+	assert.Equal(t, testJwtSecret, config.JwtSecret)
 	assert.Equal(t, 3600, config.JwtExpiresIn)
 	assert.Equal(t, "info", config.LogLevel)
 	assert.NotNil(t, config.AuthToken)
@@ -59,8 +62,8 @@ func TestLoadConfigSuccess(t *testing.T) {
 func TestLoadConfigFileNotFound(t *testing.T) {
 	mockConfig := new(MockConfig)
 
-	mockConfig.On("LoadConfig", "/tmp/test").Return(nil, errors.New("config file not found"))
-	config, err := mockConfig.LoadConfig("/tmp/test")
+	mockConfig.On("LoadConfig", testConfigPath).Return(nil, errors.New("config file not found"))
+	config, err := mockConfig.LoadConfig(testConfigPath)
 
 	assert.Error(t, err)
 	assert.Nil(t, config)
