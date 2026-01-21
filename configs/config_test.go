@@ -9,8 +9,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const testJwtSecret = "my-secret-key"
-const testConfigPath = "/tmp/test"
+const (
+	testJwtSecret  = "my-secret-key"
+	testConfigPath = "/tmp/test"
+)
 
 type MockConfig struct {
 	mock.Mock
@@ -25,6 +27,7 @@ func (m *MockConfig) LoadConfig(path string) (*conf, error) {
 }
 
 func TestLoadConfigSuccess(t *testing.T) {
+	t.Log("Test loading configuration successfully.")
 	mockConfig := new(MockConfig)
 
 	mockConfig.On("LoadConfig", testConfigPath).Return(&conf{
@@ -60,6 +63,7 @@ func TestLoadConfigSuccess(t *testing.T) {
 }
 
 func TestLoadConfigFileNotFound(t *testing.T) {
+	t.Log("Test loading configuration with file not found error.")
 	mockConfig := new(MockConfig)
 
 	mockConfig.On("LoadConfig", testConfigPath).Return(nil, errors.New("config file not found"))
