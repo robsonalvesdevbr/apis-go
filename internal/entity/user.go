@@ -1,19 +1,19 @@
 package entity
 
 import (
-	"github.com/google/uuid"
+	"github.com/robsonalvesdevbr/apis-go/pkg/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID       uuid.UUID `json:"id"`
+	ID       entity.ID `json:"id"`
 	Name     string    `json:"name"`
 	Email    string    `json:"email"`
 	Password string    `json:"-"`
 }
 
 func NewUser(id, name, email, password string) (*User, error) {
-	uuidNew, errGuid := uuid.NewV7()
+	uuidNew, errGuid := entity.NewID()
 	if errGuid != nil {
 		return nil, errGuid
 	}
