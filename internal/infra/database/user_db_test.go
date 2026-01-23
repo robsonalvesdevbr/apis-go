@@ -28,3 +28,22 @@ func TestUser_DB_CreateUser(t *testing.T) {
 	assert.Equal(t, user.Email, userFound.Email)
 	assert.Equal(t, user.Password, userFound.Password)
 }
+
+func TestUser_DB_FindByEmail(t *testing.T) {
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
+	assert.NoError(t, err)
+
+	db.AutoMigrate(&entity.User{})
+
+	user, _ := entity.NewUser("Jane Doe", "janedoe@example.com", "securepassword")
+	userDB := NewUser(db)
+	err = userDB.Create(user)
+	assert.NoError(t, err)
+
+	userFound, err := userDB.FindByEmail("janedoe@example.com")
+	assert.NoError(t, err)
+	assert.Equal(t, user.ID, userFound.ID)
+	assert.Equal(t, user.Name, userFound.Name)
+	assert.Equal(t, user.Email, userFound.Email)
+	assert.Equal(t, user.Password, userFound.Password)
+}
