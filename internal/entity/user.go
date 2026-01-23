@@ -14,10 +14,10 @@ var (
 )
 
 type User struct {
-	ID       entity.ID `json:"id"`
-	Name     string    `json:"name"`
-	Email    string    `json:"email"`
-	Password string    `json:"-"`
+	ID       entity.ID `json:"id" gorm:"type:uuid;primaryKey"`
+	Name     string    `json:"name" gorm:"type:varchar(255)"`
+	Email    string    `json:"email" gorm:"type:varchar(255);uniqueIndex"`
+	Password string    `json:"-" gorm:"type:varchar(255)"`
 }
 
 func NewUser(name, email, password string) (*User, error) {
