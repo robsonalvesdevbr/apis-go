@@ -32,9 +32,26 @@ func TestUser_NewUser_Password_IsInvalid(t *testing.T) {
 	assert.False(t, isInvalid)
 }
 
-// validar se nao é hash
 func TestUser_NewUser_Password_IsHashed(t *testing.T) {
 	user, err := NewUser("John Doe", "john.doe@example.com", "password123")
 	assert.NoError(t, err)
 	assert.NotEqual(t, "password123", user.Password)
+}
+
+func TestUser_NewUser_InvalidName(t *testing.T) {
+	user, err := NewUser("", "john.doe@example.com", "password123")
+	assert.Nil(t, user)
+	assert.Equal(t, ErrInvalidUserName, err)
+}
+
+func TestUser_NewUser_InvalidEmail(t *testing.T) {
+	user, err := NewUser("John Doe", "", "password123")
+	assert.Nil(t, user)
+	assert.Equal(t, ErrInvalidUserEmail, err)
+}
+
+func TestUser_NewUser_InvalidPassword(t *testing.T) {
+	user, err := NewUser("John Doe", "john.doe@example.com", "")
+	assert.Nil(t, user)
+	assert.Equal(t, ErrInvalidUserPassword, err)
 }
