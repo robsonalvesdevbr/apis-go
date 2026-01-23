@@ -26,8 +26,7 @@ func (m *MockConfig) LoadConfig(path string) (*conf, error) {
 	return args.Get(0).(*conf), args.Error(1)
 }
 
-func TestLoadConfigSuccess(t *testing.T) {
-	t.Log("Test loading configuration successfully.")
+func TestConfig_LoadConfig_Success(t *testing.T) {
 	mockConfig := new(MockConfig)
 
 	mockConfig.On("LoadConfig", testConfigPath).Return(&conf{
@@ -62,8 +61,7 @@ func TestLoadConfigSuccess(t *testing.T) {
 	mockConfig.AssertExpectations(t)
 }
 
-func TestLoadConfigFileNotFound(t *testing.T) {
-	t.Log("Test loading configuration with file not found error.")
+func TestConfig_LoadConfig_FileNotFound(t *testing.T) {
 	mockConfig := new(MockConfig)
 
 	mockConfig.On("LoadConfig", testConfigPath).Return(nil, errors.New("config file not found"))

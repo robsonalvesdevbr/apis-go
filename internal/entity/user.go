@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"errors"
+
 	"github.com/robsonalvesdevbr/apis-go/pkg/entity"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,7 +14,11 @@ type User struct {
 	Password string    `json:"-"`
 }
 
-func NewUser(id, name, email, password string) (*User, error) {
+func NewUser(name, email, password string) (*User, error) {
+	if name == "" || email == "" || password == "" {
+		return nil, errors.New("name, email, and password must not be empty")
+	}
+
 	uuidNew, errGuid := entity.NewID()
 	if errGuid != nil {
 		return nil, errGuid
