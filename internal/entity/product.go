@@ -26,12 +26,14 @@ func NewProduct(name string, price float64) (*Product, error) {
 		return nil, errGuid
 	}
 
+	timeNow := time.Now().UTC()
+
 	product := &Product{
 		ID:        uuidNew,
 		Name:      name,
 		Price:     price,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
+		CreatedAt: timeNow,
+		UpdatedAt: timeNow,
 	}
 
 	if err := product.Validate(); err != nil {
