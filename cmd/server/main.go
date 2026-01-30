@@ -33,11 +33,14 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
-	r.Post("/products", productHandler.CreateProduct)
-	r.Get("/products/{id}", productHandler.GetProduct)
-	r.Put("/products/{id}", productHandler.UpdateProduct)
-	r.Delete("/products/{id}", productHandler.DeleteProduct)
-	r.Get("/products", productHandler.ListProducts)
+
+	r.Route("/products", func(r chi.Router) {
+		r.Get("/{id}", productHandler.GetProduct)
+		r.Get("/", productHandler.ListProducts)
+		r.Post("/", productHandler.CreateProduct)
+		r.Put("/{id}", productHandler.UpdateProduct)
+		r.Delete("/{id}", productHandler.DeleteProduct)
+	})
 
 	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)
 	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), r)
