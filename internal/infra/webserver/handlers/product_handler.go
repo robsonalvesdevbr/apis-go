@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -102,4 +103,44 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
+}
+
+func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err := h.ProductDB.Delete(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *ProductHandler) ListProducts(w http.ResponseWriter, r *http.Request) {
+	pageParam := r.URL.Query().Get("page")
+	limitParam := r.URL.Query().Get("limit")
+	sortParam := r.URL.Query().Get("sort")
+
+	var page, limit int
+	if pageParam != "" {
+		page, _ = strconv.Atoi(pageParam)
+	}
+	if limitParam != "" {
+		limit, _ = strconv.Atoi(limitParam)
+	}
+
+	products, err := h.ProductDB.FindAll(page, limit, sortParam)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(products)
 }

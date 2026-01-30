@@ -18,3 +18,12 @@ Accept: application/json
   "name": "Updated Product",
   "price": 29.99
 }
+###
+DELETE http://localhost:8000/products/019bfd58-8e98-761b-a64f-6328e37f7816 HTTP/1.1
+Accept: application/json
+###
+GET http://localhost:8000/products?page=1&limit=3 HTTP/1.1
+Accept: application/json
+###
+GET http://localhost:8000/products?page=1&limit=3&sort=desc HTTP/1.1
+Accept: application/json
