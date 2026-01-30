@@ -38,6 +38,11 @@ func (p *Product) FindAll(page, limit int, sort string) ([]entity.Product, error
 		}
 	}
 
+	for i := range products {
+		products[i].CreatedAt = products[i].CreatedAt.UTC()
+		products[i].UpdatedAt = products[i].UpdatedAt.UTC()
+	}
+
 	return products, nil
 }
 
@@ -50,6 +55,8 @@ func (p *Product) FindByID(id string) (*entity.Product, error) {
 	if err := p.DB.First(&product, "id = ?", idd).Error; err != nil {
 		return nil, err
 	}
+	product.CreatedAt = product.CreatedAt.UTC()
+	product.UpdatedAt = product.UpdatedAt.UTC()
 	return &product, nil
 }
 

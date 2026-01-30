@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
 	"github.com/robsonalvesdevbr/apis-go/configs"
 	"github.com/robsonalvesdevbr/apis-go/internal/entity"
 	"github.com/robsonalvesdevbr/apis-go/internal/infra/database"
@@ -28,8 +30,13 @@ func main() {
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
 
-	http.HandleFunc("/products", productHandler.CreateProduct)
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Logger)
+	r.Post("/products", productHandler.CreateProduct)
+	r.Get("/products/{id}", productHandler.GetProduct)
+	r.Put("/products/{id}", productHandler.UpdateProduct)
 
 	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)
-	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), nil)
+	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), r)
 }

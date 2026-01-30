@@ -2,6 +2,7 @@ package database
 
 import (
 	"testing"
+	"time"
 
 	"github.com/robsonalvesdevbr/apis-go/internal/entity"
 	"github.com/stretchr/testify/assert"
@@ -26,6 +27,8 @@ func TestProduct_DB_CreateProduct(t *testing.T) {
 	assert.NotEmpty(t, product.ID, productFound.ID)
 	assert.Equal(t, product.Name, productFound.Name)
 	assert.Equal(t, product.Price, productFound.Price)
+	assert.WithinDuration(t, product.UpdatedAt, time.Now().UTC(), time.Second)
+	assert.WithinDuration(t, product.CreatedAt, time.Now().UTC(), time.Second)
 }
 
 func TestProduct_DB_FindAll(t *testing.T) {
@@ -105,6 +108,7 @@ func TestProduct_DB_Update(t *testing.T) {
 
 	product.Name = "Updated Product"
 	product.Price = 20.0
+	product.UpdatedAt = time.Now().UTC()
 	err = productDB.Update(product)
 	assert.NoError(t, err)
 
@@ -113,6 +117,7 @@ func TestProduct_DB_Update(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "Updated Product", productFound.Name)
 	assert.Equal(t, 20.0, productFound.Price)
+	assert.WithinDuration(t, productFound.UpdatedAt, time.Now().UTC(), time.Second)
 }
 
 func TestProduct_DB_Delete(t *testing.T) {
