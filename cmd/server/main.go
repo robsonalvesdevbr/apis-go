@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/robsonalvesdevbr/apis-go/configs"
 	"github.com/robsonalvesdevbr/apis-go/internal/entity"
 	"github.com/robsonalvesdevbr/apis-go/internal/infra/database"
