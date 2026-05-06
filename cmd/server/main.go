@@ -32,7 +32,9 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
 	r.Route("/products", func(r chi.Router) {
 		r.Get("/{id}", productHandler.GetProduct)
