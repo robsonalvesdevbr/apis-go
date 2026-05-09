@@ -44,6 +44,13 @@ func main() {
 		r.Delete("/{id}", productHandler.DeleteProduct)
 	})
 
+	userDB := database.NewUser(db)
+	userHandler := handlers.NewUserHandler(userDB)
+
+	r.Route("/users", func(r chi.Router) {
+		r.Post("/", userHandler.CreateUser)
+	})
+
 	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)
 	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), r)
 }
