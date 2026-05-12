@@ -45,10 +45,11 @@ func main() {
 	})
 
 	userDB := database.NewUser(db)
-	userHandler := handlers.NewUserHandler(userDB)
+	userHandler := handlers.NewUserHandler(userDB, config.AuthToken, config.JwtExpiresIn)
 
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/", userHandler.CreateUser)
+		r.Post("/generate-token", userHandler.GetJWT)
 	})
 
 	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)

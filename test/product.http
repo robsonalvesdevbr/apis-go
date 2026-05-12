@@ -27,13 +27,3 @@ Accept: application/json
 ###
 GET http://localhost:8000/products?page=1&limit=3&sort=desc HTTP/1.1
 Accept: application/json
-###
-POST http://localhost:8000/users HTTP/1.1
-Content-Type: application/json
-Accept: application/json
-
-{
-  "name": "Ana Julia",
-  "email": "ana.julia@testuser.com",
-  "password": "password123"
-}
