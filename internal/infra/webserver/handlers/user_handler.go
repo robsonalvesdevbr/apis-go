@@ -42,10 +42,9 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// token := jwtauth.New("H256", []byte("secret"), nil)
-
 	//_, tokenEncode, err := token.Encode(claims)
-
 	//_, tokenEncode, err := h.JWT.Encode(claims)
+
 	_, tokenEncode, err := jwt.Encode(claims)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
