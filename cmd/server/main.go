@@ -29,7 +29,7 @@ func main() {
 	db.AutoMigrate(&entity.User{}, &entity.Product{})
 
 	userDB := database.NewUser(db)
-	userHandler := handlers.NewUserHandler(userDB, config.AuthToken, config.JwtExpiresIn)
+	userHandler := handlers.NewUserHandler(userDB)
 
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
@@ -39,11 +39,13 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.WithValue("jwt", config.TokenAuth))
+	r.Use(middleware.WithValue("exp", config.JwtExpiresIn))
 	r.Use(LogRequest)
 
 	r.Route("/products", func(r chi.Router) {
-		r.Use(jwtauth.Verifier(config.AuthToken))
-		r.Use(jwtauth.Authenticator(config.AuthToken))
+		r.Use(jwtauth.Verifier(config.TokenAuth))
+		r.Use(jwtauth.Authenticator(config.TokenAuth))
 		r.Get("/{id}", productHandler.GetProduct)
 		r.Get("/", productHandler.ListProducts)
 		r.Post("/", productHandler.CreateProduct)

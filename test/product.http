@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzg3MjI1NzcsInN1YiI6IjAxOWUxOWZiLTA1NWMtN2I1Yi04MTAxLWVkNjUwNDNhNWQ3NCJ9.nm5N2-1worq_Z8CCWeQrtMkf6NyYi68H5HFrQlieDpo
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzg3MjQwNjAsInN1YiI6IjAxOWUxOWZiLTA1NWMtN2I1Yi04MTAxLWVkNjUwNDNhNWQ3NCJ9.Wuuu8e00kl2ErSga_2qgiLkWVc01xYNam3BCKMhcgbw
 ###
 POST http://localhost:8000/products HTTP/1.1
 Content-Type: application/json

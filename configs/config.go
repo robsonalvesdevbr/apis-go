@@ -15,7 +15,7 @@ type conf struct {
 	WebServerPort string `mapstructure:"WEB_SERVER_PORT"`
 	JwtSecret     string `mapstructure:"JWT_SECRET"`
 	JwtExpiresIn  int    `mapstructure:"JWT_EXPIRES_IN"`
-	AuthToken     *jwtauth.JWTAuth
+	TokenAuth     *jwtauth.JWTAuth
 	LogLevel      string `mapstructure:"LOG_LEVEL"`
 }
 
@@ -32,6 +32,6 @@ func LoadConfig(path string) (*conf, error) {
 	if err := viper.Unmarshal(&configuration); err != nil {
 		return nil, err
 	}
-	configuration.AuthToken = jwtauth.New("HS256", []byte(configuration.JwtSecret), nil)
+	configuration.TokenAuth = jwtauth.New("HS256", []byte(configuration.JwtSecret), nil)
 	return &configuration, nil
 }

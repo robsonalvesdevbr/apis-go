@@ -12,16 +12,17 @@ import (
 )
 
 type UserHandler struct {
-	UserDB            database.UserInterface
-	JWT               *jwtauth.JWTAuth
-	JWTExpireDuration int
+	UserDB database.UserInterface
 }
 
-func NewUserHandler(userDB database.UserInterface, jwt *jwtauth.JWTAuth, jwtExpireDuration int) *UserHandler {
-	return &UserHandler{UserDB: userDB, JWT: jwt, JWTExpireDuration: jwtExpireDuration}
+func NewUserHandler(userDB database.UserInterface) *UserHandler {
+	return &UserHandler{UserDB: userDB}
 }
 
 func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
+	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
+	jwtExpireIn := r.Context().Value("exp").(int)
+
 	var credentials dto.GetJWTInput
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
@@ -37,14 +38,15 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 
 	claims := map[string]interface{}{
 		"sub": user.ID.String(),
-		"exp": time.Now().Add(time.Duration(h.JWTExpireDuration) * time.Second).Unix(),
+		"exp": time.Now().Add(time.Duration(jwtExpireIn) * time.Second).Unix(),
 	}
 
 	// token := jwtauth.New("H256", []byte("secret"), nil)
 
 	//_, tokenEncode, err := token.Encode(claims)
 
-	_, tokenEncode, err := h.JWT.Encode(claims)
+	//_, tokenEncode, err := h.JWT.Encode(claims)
+	_, tokenEncode, err := jwt.Encode(claims)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

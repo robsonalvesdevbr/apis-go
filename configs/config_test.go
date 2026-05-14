@@ -40,7 +40,7 @@ func TestConfig_LoadConfig_Success(t *testing.T) {
 		JwtSecret:     testJwtSecret,
 		JwtExpiresIn:  3600,
 		LogLevel:      "info",
-		AuthToken:     jwtauth.New("HS256", []byte(testJwtSecret), nil),
+		TokenAuth:     jwtauth.New("HS256", []byte(testJwtSecret), nil),
 	}, nil)
 	config, err := mockConfig.LoadConfig(testConfigPath)
 
@@ -56,7 +56,7 @@ func TestConfig_LoadConfig_Success(t *testing.T) {
 	assert.Equal(t, testJwtSecret, config.JwtSecret)
 	assert.Equal(t, 3600, config.JwtExpiresIn)
 	assert.Equal(t, "info", config.LogLevel)
-	assert.NotNil(t, config.AuthToken)
+	assert.NotNil(t, config.TokenAuth)
 
 	mockConfig.AssertExpectations(t)
 }
