@@ -39,6 +39,7 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(LogRequest)
 
 	r.Route("/products", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(config.AuthToken))
@@ -57,4 +58,12 @@ func main() {
 
 	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)
 	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), r)
+}
+
+func LogRequest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID := middleware.GetReqID(r.Context())
+		fmt.Printf("Received request: %s %s %s\n", r.Method, r.URL.Path, requestID)
+		next.ServeHTTP(w, r)
+	})
 }
