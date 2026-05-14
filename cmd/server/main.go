@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/robsonalvesdevbr/apis-go/configs"
 	"github.com/robsonalvesdevbr/apis-go/internal/entity"
 	"github.com/robsonalvesdevbr/apis-go/internal/infra/database"
@@ -27,6 +28,9 @@ func main() {
 
 	db.AutoMigrate(&entity.User{}, &entity.Product{})
 
+	userDB := database.NewUser(db)
+	userHandler := handlers.NewUserHandler(userDB, config.AuthToken, config.JwtExpiresIn)
+
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
 
@@ -37,15 +41,14 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Route("/products", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(config.AuthToken))
+		r.Use(jwtauth.Authenticator(config.AuthToken))
 		r.Get("/{id}", productHandler.GetProduct)
 		r.Get("/", productHandler.ListProducts)
 		r.Post("/", productHandler.CreateProduct)
 		r.Put("/{id}", productHandler.UpdateProduct)
 		r.Delete("/{id}", productHandler.DeleteProduct)
 	})
-
-	userDB := database.NewUser(db)
-	userHandler := handlers.NewUserHandler(userDB, config.AuthToken, config.JwtExpiresIn)
 
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/", userHandler.CreateUser)
