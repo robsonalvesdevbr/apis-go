@@ -8,13 +8,31 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/robsonalvesdevbr/apis-go/configs"
+	_ "github.com/robsonalvesdevbr/apis-go/docs"
 	"github.com/robsonalvesdevbr/apis-go/internal/entity"
 	"github.com/robsonalvesdevbr/apis-go/internal/infra/database"
 	"github.com/robsonalvesdevbr/apis-go/internal/infra/webserver/handlers"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
+// @title           API Go
+// @version         1.0
+// @description     API Go - Example of a simple API in Go with JWT authentication and SQLite database.
+
+// @contact.name   Robson Alves
+// @contact.url    https://www.robsonalvesdev.dev.br
+// @contact.email  robson.curitibapr@gmail.com
+
+// @license.name  MIT
+// @license.url   https://opensource.org/licenses/MIT
+
+// @host      localhost:8000
+// @BasePath  /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	config, err := configs.LoadConfig(".")
 	if err != nil {
@@ -54,9 +72,11 @@ func main() {
 	})
 
 	r.Route("/users", func(r chi.Router) {
-		r.Post("/", userHandler.CreateUser)
+		r.Post("/", userHandler.Create)
 		r.Post("/generate-token", userHandler.GetJWT)
 	})
+
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL(fmt.Sprintf("http://%s:%s/docs/doc.json", config.DBHost, config.WebServerPort))))
 
 	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)
 	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), r)
