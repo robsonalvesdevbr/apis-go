@@ -23,6 +23,18 @@ func NewUserHandler(userDB database.UserInterface) *UserHandler {
 	return &UserHandler{UserDB: userDB}
 }
 
+// GetJWT godocs
+// @Summary Get a new JWT token
+// @Description Authenticate user and return a JWT token
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body dto.GetJWTInput true "User credentials"
+// @Success 200 {object} dto.AccessTokenOutput "JWT token"
+// @Failure 400 {object} Error "Bad Request"
+// @Failure 401 {object} Error "Unauthorized"
+// @Failure 500 {object} Error "Internal Server Error"
+// @Router /users/generate-token [post]
 func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
 	jwtExpireIn := r.Context().Value("exp").(int)
@@ -55,9 +67,13 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken := struct {
-		AccessToken string `json:"access_token"`
-	}{
+	// accessToken := struct {
+	// 	AccessToken string `json:"access_token"`
+	// }{
+	// 	AccessToken: tokenEncode,
+	// }
+
+	accessToken := dto.AccessTokenOutput{
 		AccessToken: tokenEncode,
 	}
 
