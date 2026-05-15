@@ -78,7 +78,7 @@ func main() {
 
 	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL(fmt.Sprintf("http://%s:%s/docs/doc.json", config.DBHost, config.WebServerPort))))
 
-	fmt.Printf("Server running on: %s:%s\n", config.DBHost, config.WebServerPort)
+	fmt.Printf("Server running on: http://%s:%s/docs/index.html\n", config.DBHost, config.WebServerPort)
 	http.ListenAndServe(fmt.Sprintf("%s:%s", config.DBHost, config.WebServerPort), r)
 }
 
