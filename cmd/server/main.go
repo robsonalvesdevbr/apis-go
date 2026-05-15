@@ -64,11 +64,11 @@ func main() {
 	r.Route("/products", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(config.TokenAuth))
 		r.Use(jwtauth.Authenticator(config.TokenAuth))
-		r.Get("/{id}", productHandler.GetProduct)
-		r.Get("/", productHandler.ListProducts)
-		r.Post("/", productHandler.CreateProduct)
-		r.Put("/{id}", productHandler.UpdateProduct)
-		r.Delete("/{id}", productHandler.DeleteProduct)
+		r.Get("/{id}", productHandler.Get)
+		r.Get("/", productHandler.List)
+		r.Post("/", productHandler.Create)
+		r.Put("/{id}", productHandler.Update)
+		r.Delete("/{id}", productHandler.Delete)
 	})
 
 	r.Route("/users", func(r chi.Router) {
